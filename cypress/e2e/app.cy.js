@@ -1,7 +1,7 @@
 describe('Homepage', () => {
-  it('Displays the Get tarted text', () => {
+  it('Displays the NEXT.JS Template text', () => {
     cy.visit('http://localhost:3000/');
 
-    cy.contains('Get started');
+    cy.contains('NEXT.JS Template');
   });
 });
