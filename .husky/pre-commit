@@ -3,5 +3,5 @@
 
 yarn lint-staged
 yarn test
-# yarn e2e:headless
-# yarn build
+yarn e2e:headless
+yarn build
