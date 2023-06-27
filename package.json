@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "husky install",
-    "type-check": "tsc --project tsconfig.json --pretty --noEmit"
+    "type-check": "tsc --project tsconfig.json --pretty --noEmit",
+    "format": "prettier --write src"
   },
   "dependencies": {
     "@types/node": "20.3.2",
@@ -26,6 +27,10 @@
   },
   "devDependencies": {
     "husky": "^8.0.0",
-    "lint-staged": "^13.2.2"
+    "lint-staged": "^13.2.2",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "2.8.8",
+    "prettier-plugin-tailwindcss": "^0.3.0"
   }
 }
