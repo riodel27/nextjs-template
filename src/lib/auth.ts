@@ -29,9 +29,48 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        if (!user || !(await compare(credentials.password, user.password))) {
+        if (!user) {
           return null;
         }
+
+        if (user?.failedLoginAttempts && user?.failedLoginAttempts >= 3) {
+          const error = {
+            status: 423,
+            message: `Your account has been locked due to multiple failed login attempts. 
+                      For security purposes,access to your account has been temporarily suspended. 
+                      Please follow the steps below to regain access`,
+          };
+
+          throw new Error(JSON.stringify(error));
+        }
+
+        if (!(await compare(credentials.password, user.password))) {
+          try {
+            // track and update user failed login attempts
+            await prisma.user.update({
+              where: {
+                email: credentials.email,
+              },
+              data: {
+                failedLoginAttempts: user.failedLoginAttempts ? user.failedLoginAttempts + 1 : 1,
+              },
+            });
+          } catch (error) {
+            console.error(error);
+          } finally {
+            return null;
+          }
+        }
+
+        // reset failed login attempts
+        await prisma.user.update({
+          where: {
+            email: credentials.email,
+          },
+          data: {
+            failedLoginAttempts: 0,
+          },
+        });
 
         return {
           id: user.id.toString(),
