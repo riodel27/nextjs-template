@@ -36,9 +36,8 @@ export const authOptions: NextAuthOptions = {
         if (user?.failedLoginAttempts && user?.failedLoginAttempts >= 3) {
           const error = {
             status: 423,
-            message: `Your account has been locked due to multiple failed login attempts. 
-                      For security purposes,access to your account has been temporarily suspended. 
-                      Please follow the steps below to regain access`,
+            message:
+              'Your account has been locked due to multiple failed login attempts. For security purposes, access to your account has been temporarily suspended. Please follow the steps below to regain access',
           };
 
           throw new Error(JSON.stringify(error));
@@ -52,7 +51,9 @@ export const authOptions: NextAuthOptions = {
                 email: credentials.email,
               },
               data: {
-                failedLoginAttempts: user.failedLoginAttempts ? user.failedLoginAttempts + 1 : 1,
+                failedLoginAttempts: user.failedLoginAttempts
+                  ? user.failedLoginAttempts + 1
+                  : 1,
               },
             });
           } catch (error) {
