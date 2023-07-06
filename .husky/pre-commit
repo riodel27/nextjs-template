@@ -2,4 +2,5 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 yarn lint-staged
-yarn build
+# TODO: Move to a pre push hook
+# yarn build
