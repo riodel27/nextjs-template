@@ -40,6 +40,14 @@ describe('Register Page', () => {
       cy.contains('Oops! Something went wrong. Please try again later.');
     });
 
+    it('should have correct alert color', () => {
+      cy.get('[data-cy="name"]').type('p');
+
+      cy.get('[data-cy="form"]').submit();
+
+      cy.get('[role="alert"]').should('have.class', 'text-destructive');
+    });
+
     it('should display an error message when name entered is too short', () => {
       cy.get('[data-cy="name"]').type('p');
 

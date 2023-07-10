@@ -153,58 +153,63 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessageProps>(
   ({ className, showMultipleErrors, children, ...props }, ref) => {
     const { error, formMessageId, name, errors } = useFormField();
 
-    const body = showMultipleErrors ? (
-      // Render multiple error messages using ErrorMessage component
-      <ErrorMessage
-        errors={errors}
-        name={name}
-        render={({ messages }) => {
-          return messages
-            ? Object.entries(messages).map(
-                ([type, error]: [string, ValidateResult]) => (
-                  <div key={type}>
-                    {Array.isArray(error) ? (
-                      error.map((errorMsg, index) => (
-                        <p
-                          key={index}
-                          className='ml-2 flex list-none items-center'
-                        >
-                          <span className='mr-2 h-1 w-1 rounded-full bg-gray-300' />
-                          {errorMsg}
-                        </p>
-                      ))
-                    ) : (
-                      <p className='ml-2 flex list-none items-center'>
-                        <span className='mr-2 h-1 w-1 rounded-full bg-gray-300' />
-                        {error}
-                      </p>
-                    )}
-                  </div>
-                )
-              )
-            : null;
-        }}
-      />
-    ) : error ? (
-      String(error?.message)
-    ) : (
-      children
-    );
+    const body = error ? String(error?.message) : children;
 
     if (!body) {
       return null;
     }
 
     return (
-      <div
-        ref={ref}
-        id={formMessageId}
-        className={cn('text-sm font-medium text-destructive', className)}
-        role='alert'
-        {...props}
-      >
-        {body}
-      </div>
+      <>
+        {showMultipleErrors ? (
+          <div
+            ref={ref}
+            id={formMessageId}
+            className={cn('text-sm font-medium text-destructive', className)}
+            {...props}
+          >
+            <ErrorMessage
+              errors={errors}
+              name={name}
+              render={({ messages }) => {
+                return messages
+                  ? Object.entries(messages).map(
+                      ([type, error]: [string, ValidateResult]) => (
+                        <div key={type}>
+                          {Array.isArray(error) ? (
+                            error.map((errorMsg, index) => (
+                              <p
+                                key={index}
+                                className='ml-2 flex list-none items-center'
+                              >
+                                <span className='mr-2 h-1 w-1 rounded-full bg-gray-300' />
+                                {errorMsg}
+                              </p>
+                            ))
+                          ) : (
+                            <p className='ml-2 flex list-none items-center'>
+                              <span className='mr-2 h-1 w-1 rounded-full bg-gray-300' />
+                              {error}
+                            </p>
+                          )}
+                        </div>
+                      )
+                    )
+                  : null;
+              }}
+            />
+          </div>
+        ) : (
+          <div
+            ref={ref}
+            id={formMessageId}
+            className={cn('text-sm font-medium text-destructive', className)}
+            {...props}
+          >
+            {body}
+          </div>
+        )}
+      </>
     );
   }
 );

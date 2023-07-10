@@ -1,6 +1,10 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Eye, Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -16,11 +20,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { registerUser } from '@/services';
-import { Eye, Loader2 } from 'lucide-react';
 import { signIn } from 'next-auth/react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 interface PasswordVisibility {
   password: boolean;
@@ -92,24 +92,26 @@ export function RegisterForm() {
         password: values.password,
       });
 
-      if (response.status === 409) {
+      if (response?.status === 409) {
         setError('The provided email address is already registered.');
         return;
       }
 
-      if (response.status === 500) {
+      if (response?.status === 500) {
         setError('Oops! Something went wrong. Please try again later.');
         return;
       }
 
-      const signInResponse = await signIn('credentials', {
-        email: values.email,
-        password: values.password,
-        redirect: false,
-      });
+      if (response?.status === 201) {
+        const signInResponse = await signIn('credentials', {
+          email: values.email,
+          password: values.password,
+          redirect: false,
+        });
 
-      if (signInResponse?.status === 200) {
-        router.push('/?signup=success');
+        if (signInResponse?.status === 200) {
+          router.push('/?signup=success');
+        }
       }
     } catch (error: any) {
       console.error(error);
@@ -141,7 +143,7 @@ export function RegisterForm() {
               <FormDescription>
                 This is your public display name.
               </FormDescription>
-              <FormMessage />
+              <FormMessage role='alert' />
             </FormItem>
           )}
         />
@@ -158,7 +160,7 @@ export function RegisterForm() {
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage role='alert' />
             </FormItem>
           )}
         />
@@ -174,6 +176,7 @@ export function RegisterForm() {
                     data-cy='password'
                     type={isPasswordVisible.password ? 'text' : 'password'}
                     placeholder='******'
+                    data-testid='password'
                     {...field}
                   />
                   <div className='absolute inset-y-0 right-0 flex items-center pr-3'>
@@ -189,7 +192,7 @@ export function RegisterForm() {
                   </div>
                 </div>
               </FormControl>
-              <FormMessage showMultipleErrors />
+              <FormMessage showMultipleErrors role='alert' />
             </FormItem>
           )}
         />
@@ -202,6 +205,7 @@ export function RegisterForm() {
               <FormControl>
                 <div className='relative'>
                   <Input
+                    data-testid='confirm-password'
                     data-cy='confirm-password'
                     placeholder='******'
                     type={
@@ -222,7 +226,7 @@ export function RegisterForm() {
                   </div>
                 </div>
               </FormControl>
-              <FormMessage />
+              <FormMessage role='alert' />
             </FormItem>
           )}
         />
